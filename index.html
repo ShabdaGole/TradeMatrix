@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Investly | Investing Dashboard</title>
+<style>
+:root{--green:#00a86b;--dark:#173c2d;--bg:#f7f9f8;--muted:#78847e;--line:#e6ece8}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;color:#202a24;background:var(--bg)}
+header{height:72px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 6%;gap:20px}
+.logo{font-size:25px;font-weight:800;color:var(--green)}
+nav{display:flex;gap:23px;align-items:center}
+nav a{color:#53635a;text-decoration:none;font-size:14px;cursor:pointer}
+nav a:hover{color:var(--green)}
+.container{max-width:1180px;margin:auto;padding:28px 22px}
+h1{font-size:30px;margin:0 0 8px}
+h2{font-size:19px;margin:0 0 18px}
+.sub{color:var(--muted);font-size:14px;line-height:1.6}
+.tag{display:inline-block;background:#e4f8ed;color:#087848;padding:7px 10px;border-radius:20px;font-size:11px;font-weight:bold}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin:24px 0}
+.card{background:white;border:1px solid var(--line);border-radius:13px;padding:21px;min-width:0}
+.label{font-size:13px;color:var(--muted)}
+.big{font-size:27px;font-weight:750;margin:12px 0}
+.green{color:#009c60}.red{color:#dc4e55}
+.layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(270px,1fr);gap:18px}
+.search{width:100%;padding:12px;border:1px solid #dce5df;border-radius:9px;font-size:14px;outline-color:var(--green);margin:14px 0}
+.stock{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.stock:last-child{border-bottom:0}
+.stock:hover{background:#fbfdfb}
+.stockname{font-weight:bold;font-size:14px}
+.symbol{color:var(--muted);font-size:12px;margin-top:5px}
+.price{text-align:right;font-size:14px;font-weight:bold}
+.change{font-size:12px;margin-top:5px}
+button{border:0;border-radius:8px;padding:11px 16px;cursor:pointer;font-weight:bold;font-size:13px}
+.primary{background:var(--green);color:white}
+.primary:hover{background:#008b59}
+.secondary{background:#e8f8ef;color:#087848}
+.outline{background:white;border:1px solid var(--line);color:#425149}
+.actions{display:flex;gap:10px;margin-top:18px}
+.actions button{flex:1}
+#chart{width:100%;height:210px;display:block;margin:12px 0}
+.charttop{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;gap:7px}
+.tabs button{padding:7px 10px;background:#f0f5f1;color:#54645a}
+.tabs button.active{background:#dff7e9;color:#087848}
+.holding{padding:13px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;font-size:13px}
+.holding:last-child{border-bottom:0}
+.notice{margin-top:20px;padding:14px;background:#fff8e8;border:1px solid #f3e6c6;border-radius:10px;color:#795e25;font-size:12px;line-height:1.6}
+.section{margin-top:20px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+.hidden{display:none!important}
+.modal{position:fixed;inset:0;background:#0b2018a6;display:flex;align-items:center;justify-content:center;padding:18px;z-index:5}
+.dialog{background:white;border-radius:16px;padding:25px;width:100%;max-width:390px}
+.dialog input,.dialog select{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;margin:8px 0 16px;font-size:15px}
+.dialog label{font-size:13px;color:var(--muted)}
+.dialog h2{margin-bottom:9px}
+@media(max-width:750px){header{padding:0 18px}nav{gap:12px}nav a{font-size:12px}.grid{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.container{padding:22px 14px}h1{font-size:25px}}
+@media(max-width:440px){header{height:auto;min-height:65px;flex-wrap:wrap;padding:14px}nav{width:100%;justify-content:space-between}.big{font-size:24px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">investly.</div>
+  <nav>
+    <a onclick="go('home')">Home</a>
+    <a onclick="go('markets')">Explore</a>
+    <a onclick="go('portfolio')">Portfolio</a>
+  </nav>
+  <span class="tag">PAPER TRADING</span>
+</header>
+
+<main class="container" id="home">
+  <span class="tag">YOUR INVESTING SPACE</span>
+  <h1 style="margin-top:16px">Good investing starts here.</h1>
+  <p class="sub">Explore stocks, track a virtual portfolio, and practice investing without risking real money.</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Virtual account balance</div>
+      <div class="big" id="cash">₹1,00,000</div>
+      <div class="sub">Available demo cash</div>
+    </div>
+    <div class="card">
+      <div class="label">Portfolio value</div>
+      <div class="big" id="total">₹1,00,000</div>
+      <div class="sub">Cash + simulated holdings</div>
+    </div>
+    <div class="card">
+      <div class="label">Invested amount</div>
+      <div class="big" id="invested">₹0</div>
+      <div class="sub">Cost of current holdings</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <section class="card" id="markets">
+      <div class="charttop">
+        <h2 style="margin:0">Explore markets</h2>
+        <span class="tag">DEMO PRICES</span>
+      </div>
+      <input id="search" class="search" placeholder="Search stocks, e.g. TCS, Reliance..." oninput="renderStocks()">
+      <div id="stocks"></div>
+    </section>
+
+    <section class="card">
+      <div class="charttop">
+        <div>
+          <div class="label" id="selectedSymbol">RELIANCE</div>
+          <h2 style="margin:7px 0" id="selectedName">Reliance Industries</h2>
+        </div>
+        <span class="tag">STOCK</span>
+      </div>
+      <div class="big" id="selectedPrice">₹1,450.00</div>
+      <div id="selectedChange" class="change green">+1.20%</div>
+      <div class="charttop" style="margin-top:20px">
+        <span class="label">Illustrative price chart</span>
+        <div class="tabs">
+          <button class="active" onclick="drawChart(1,this)">1D</button>
+          <button onclick="drawChart(2,this)">1W</button>
+          <button onclick="drawChart(3,this)">1M</button>
+        </div>
+      </div>
+      <canvas id="chart"></canvas>
+      <div class="actions">
+        <button class="primary" onclick="openTrade('buy')">Buy</button>
+        <button class="secondary" onclick="openTrade('sell')">Sell</button>
+      </div>
+      <button class="outline" style="width:100%;margin-top:10px" onclick="toggleWatch()">☆ Add to watchlist</button>
+    </section>
+  </div>
+
+  <section class="card section" id="portfolio">
+    <h2>Your portfolio</h2>
+    <div class="sub" style="margin-bottom:12px">Your simulated holdings and transaction history.</div>
+    <div id="holdings"></div>
+    <h2 style="margin-top:24px">Recent transactions</h2>
+    <div id="history" class="sub">No transactions yet. Try a demo order.</div>
+    <button class="outline" onclick="resetDemo()" style="margin-top:18px">Reset demo account</button>
+  </section>
+
+  <section class="card section">
+    <h2>My watchlist</h2>
+    <div id="watchlist" class="sub">Add a stock to your watchlist to see it here.</div>
+  </section>
+
+  <div class="notice">
+    <b>Important:</b> This is a paper-trading educational prototype. Prices are fictional and do not represent live exchange data. Buy and sell orders only change a virtual balance stored in this browser. No real trades or payments are made.
+  </div>
+</main>
+
+<footer>investly. · Independent educational demo · Not investment advice</footer>
+
+<div id="modal" class="modal hidden">
+  <div class="dialog">
+    <h2 id="tradeTitle">Buy stock</h2>
+    <p class="sub" id="tradeDescription"></p>
+    <label for="quantity">Quantity</label>
+    <input id="quantity" type="number" min="1" step="1" value="1">
+    <div class="label">Estimated order value</div>
+    <div class="big" id="orderValue">₹0</div>
+    <div class="actions">
+      <button class="outline" onclick="closeTrade()">Cancel</button>
+      <button class="primary" id="confirm">Confirm demo order</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const initialStocks = [
+ {s:"RELIANCE",n:"Reliance Industries",p:1450,c:1.2},
+ {s:"TCS",n:"Tata Consultancy Services",p:3820,c:0.8},
+ {s:"INFY",n:"Infosys",p:1580,c:-0.4},
+ {s:"HDFCBANK",n:"HDFC Bank",p:1680,c:0.6},
+ {s:"ICICIBANK",n:"ICICI Bank",p:1240,c:1.1},
+ {s:"TATAMOTORS",n:"Tata Motors",p:720,c:-1.3},
+ {s:"ITC",n:"ITC Limited",p:440,c:0.3},
+ {s:"WIPRO",n:"Wipro",p:290,c:-0.2}
+];
+
+const STORE="investly_demo_v1";
+let state;
+let selected="RELIANCE";
+let tradeType="buy";
+let chartPeriod=1;
+
+function freshState(){
+ return {cash:100000, holdings:{}, history:[], watchlist:["TCS","INFY"]};
+}
+function load(){
+ try {
+  const saved=localStorage.getItem(STORE);
+  state=saved?JSON.parse(saved):freshState();
+  if(!state || typeof state.cash!=="number") state=freshState();
+ } catch(e){state=freshState();}
+}
+function save(){
+ localStorage.setItem(STORE,JSON.stringify(state));
+}
+function stock(s){return initialStocks.find(x=>x.s===s);}
+function fmt(n){
+ return "₹"+n.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function go(id){document.getElementById(id).scrollIntoView({behavior:"smooth"});}
+
+function renderStocks(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const list=initialStocks.filter(x=>(x.s+" "+x.n).toLowerCase().includes(q));
+ document.getElementById("stocks").innerHTML=list.map(x=>`
+ <div class="stock" onclick="selectStock('${x.s}')">
+  <div><div class="stockname">${x.n}</div><div class="symbol">${x.s}</div></div>
+  <div class="price">${fmt(x.p)}<div class="change ${x.c>=0?'green':'red'}">${x.c>0?'+':''}${x.c.toFixed(2)}% demo</div></div>
+ </div>`).join("")||'<p class="sub">No matching stocks.</p>';
+}
+function selectStock(s){
+ selected=s;
+ const x=stock(s);
+ document.getElementById("selectedSymbol").textContent=x.s;
+ document.getElementById("selectedName").textContent=x.n;
+ document.getElementById("selectedPrice").textContent=fmt(x.p);
+ document.getElementById("selectedChange").textContent=(x.c>0?"+":"")+x.c.toFixed(2)+"% demo change";
+ document.getElementById("selectedChange").className="change "+(x.c>=0?"green":"red");
+ updateWatchButton();
+ drawChart(chartPeriod);
+}
+function drawChart(period,button){
+ chartPeriod=period;
+ if(button){
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  button.classList.add("active");
+ }
+ const canvas=document.getElementById("chart");
+ const rect=canvas.getBoundingClientRect();
+ const dpr=window.devicePixelRatio||1;
+ canvas.width=rect.width*dpr;
+ canvas.height=210*dpr;
+ const ctx=canvas.getContext("2d");
+ ctx.scale(dpr,dpr);
+ const w=rect.width,h=210;
+ ctx.clearRect(0,0,w,h);
+ const base=stock(selected).p;
+ let seed=selected.split("").reduce((a,c)=>a+c.charCodeAt(0),period*17);
+ const vals=[];
+ for(let i=0;i<48;i++){
+  seed=(seed*9301+49297)%233280;
+  const delta=((seed/233280)-.49)*base*.018*period;
+  vals.push((vals.length?vals[vals.length-1]:base*.96)+delta);
+ }
+ const min=Math.min(...vals),max=Math.max(...vals);
+ const pad=15;
+ ctx.strokeStyle="#e9efeb";ctx.lineWidth=1;
+ for(let i=0;i<4;i++){
+  const y=pad+i*(h-2*pad)/3;
+  ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
+ }
+ ctx.beginPath();
+ vals.forEach((v,i)=>{
+  const x=i*w/(vals.length-1);
+  const y=pad+(max-v)/(max-min||1)*(h-2*pad);
+  i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+ });
+ ctx.lineTo(w,h-pad);ctx.lineTo(0,h-pad);ctx.closePath();
+ ctx.fillStyle="rgba(0,168,107,.10)";ctx.fill();
+ ctx.beginPath();
+ vals.forEach((v,i)=>{
+  const x=i*w/(vals.length-1);
+  const y=pad+(max-v)/(max-min||1)*(h-2*pad);
+  i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+ });
+ ctx.strokeStyle="#00a86b";ctx.lineWidth=2;ctx.stroke();
+}
+function updateWatchButton(){
+ const exists=state.watchlist.includes(selected);
+ document.querySelector('button[onclick="toggleWatch()"]').textContent=
+ exists?"★ Remove from watchlist":"☆ Add to watchlist";
+}
+function toggleWatch(){
+ if(state.watchlist.includes(selected))
+  state.watchlist=state.watchlist.filter(s=>s!==selected);
+ else state.watchlist.push(selected);
+ save();renderAll();
+}
+function openTrade(type){
+ tradeType=type;
+ const x=stock(selected);
+ document.getElementById("tradeTitle").textContent=(type==="buy"?"Buy ":"Sell ")+x.s;
+ document.getElementById("tradeDescription").textContent=x.n+" · Demo price "+fmt(x.p);
+ document.getElementById("quantity").value=1;
+ document.getElementById("modal").classList.remove("hidden");
+ updateOrderValue();
+ document.getElementById("quantity").oninput=updateOrderValue;
+ document.getElementById("confirm").onclick=confirmTrade;
+}
+function closeTrade(){document.getElementById("modal").classList.add("hidden");}
+function updateOrderValue(){
+ const qty=Math.floor(Number(document.getElementById("quantity").value)||0);
+ document.getElementById("orderValue").textContent=fmt(Math.max(0,qty)*stock(selected).p);
+}
+function confirmTrade(){
+ const qty=Math.floor(Number(document.getElementById("quantity").value));
+ const x=stock(selected);
+ if(!Number.isSafeInteger(qty)||qty<1){alert("Enter a whole quantity greater than zero.");return;}
+ const total=qty*x.p;
+ const owned=state.holdings[selected]?.qty||0;
+ if(tradeType==="buy"){
+  if(total>state.cash){alert("Insufficient virtual cash.");return;}
+  state.cash-=total;
+  if(!state.holdings[selected])state.holdings[selected]={qty:0,cost:0};
+  state.holdings[selected].qty+=qty;
+  state.holdings[selected].cost+=total;
+ }else{
+  if(qty>owned){alert("You do not own enough shares in this demo account.");return;}
+  state.cash+=total;
+  state.holdings[selected].qty-=qty;
+  state.holdings[selected].cost-=state.holdings[selected].cost*(qty/owned);
+  if(state.holdings[selected].qty===0)delete state.holdings[selected];
+ }
+ state.history.unshift({type:tradeType,s:selected,qty,price:x.p,total,at:new Date().toLocaleString()});
+ state.history=state.history.slice(0,20);
+ save();closeTrade();renderAll();
+ alert("Demo order completed. No real trade was placed.");
+}
+function renderPortfolio(){
+ let invested=0,market=0;
+ const entries=Object.entries(state.holdings);
+ document.getElementById("holdings").innerHTML=entries.length?entries.map(([s,h])=>{
+  const x=stock(s),value=h.qty*x.p;invested+=h.cost;market+=value;
+  const pnl=value-h.cost;
+  return `<div class="holding"><div><b>${s}</b><div class="symbol">${h.qty} shares · Avg. cost ${fmt(h.cost/h.qty)}</div></div><div style="text-align:right"><b>${fmt(value)}</b><div class="${pnl>=0?'green':'red'}">${pnl>=0?'+':''}${fmt(pnl)}</div></div></div>`;
+ }).join(""):'<p class="sub">You have no holdings yet. Select a stock and place a demo buy order.</p>';
+ document.getElementById("cash").textContent=fmt(state.cash);
+ document.getElementById("invested").textContent=fmt(invested);
+ document.getElementById("total").textContent=fmt(state.cash+market);
+ document.getElementById("history").innerHTML=state.history.length?state.history.map(h=>
+  `<div class="holding"><div><b class="${h.type==='buy'?'green':'red'}">${h.type.toUpperCase()} ${h.s}</b><div class="symbol">${h.qty} shares · ${h.at}</div></div><div style="text-align:right"><b>${fmt(h.total)}</b><div class="symbol">Demo order</div></div></div>`
+ ).join(""):'No transactions yet. Try a demo order.';
+}
+function renderWatchlist(){
+ document.getElementById("watchlist").innerHTML=state.watchlist.length?state.watchlist.map(s=>{
+  const x=stock(s);if(!x)return "";
+  return `<div class="stock" onclick="selectStock('${s}')"><div><b>${x.s}</b><div class="symbol">${x.n}</div></div><div class="price">${fmt(x.p)}<div class="${x.c>=0?'green':'red'} change">${x.c>0?'+':''}${x.c}%</div></div></div>`;
+ }).join(""):'No stocks saved. Select a stock and add it to your watchlist.';
+}
+function renderAll(){
+ renderStocks();renderPortfolio();renderWatchlist();selectStock(selected);
+}
+function resetDemo(){
+ if(confirm("Reset your virtual cash, holdings and transactions?")){
+  state=freshState();save();renderAll();
+ }
+}
+load();renderAll();
+window.addEventListener("resize",()=>drawChart(chartPeriod));
+</script>
+</body>
+</html>
